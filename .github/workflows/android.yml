@@ -21,14 +21,19 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Instalar Android SDK y Build-Tools
+    - name: Configurar Android SDK
       uses: android-actions/setup-android@v3
 
-    - name: Compilar APK con Gradle
-      run: gradle assembleDebug
+    - name: Generar ejecutable Gradle Wrapper si no existe
+      run: |
+        gradle wrapper --gradle-version 8.1.1
+        chmod +x gradlew
 
-    - name: Subir APK como artefacto descargable
+    - name: Compilar APK (Debug)
+      run: ./gradlew assembleDebug --stacktrace
+
+    - name: Buscar y subir APK generado
       uses: actions/upload-artifact@v4
       with:
         name: Trasmitir-App-Debug
-        path: app/build/outputs/apk/debug/app-debug.apk
+        path: app/build/outputs/apk/debug/*.apk

@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -20,14 +21,17 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Dar permisos a Gradle
-      run: chmod +x gradlew || true
+    - name: Configurar Android SDK
+      uses: android-actions/setup-android@v3
 
-    - name: Compilar APK con Gradle
+    - name: Configurar Gradle
+      uses: gradle/actions/setup-gradle@v3
+
+    - name: Compilar APK (Debug)
       run: gradle assembleDebug
 
-    - name: Subir APK como artefacto descargable
+    - name: Subir APK generado
       uses: actions/upload-artifact@v4
       with:
         name: Trasmitir-App-Debug
-        path: app/build/outputs/apk/debug/app-debug.apk
+        path: app/build/outputs/apk/debug/*.apk
